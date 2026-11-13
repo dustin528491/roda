@@ -34,7 +34,8 @@
 ## 테스트 환경
 
 - Pleos Connect Emulator **v2.1.0** (Android API 34, `system-images;android-34;pleos_car_emulator;x86_64`)
-- 화면 규격: **2560 × 1440, 160dpi** (앱 창 1682 × 1210)
+- 화면 규격: **2560 × 1440, 160dpi** (Connect-S-17, 앱 창 가로 1682 × 1210). 분할 화면 세로 창(840dp)에서는 한 줄 배치로 바뀝니다.
+- 디자인: Pleos Connect 디자인 가이드의 색·글자 크기 토큰과 기본 앱(전화·차량 제어)의 화면 형식(흰 칸·1px 구분선·검은 선택 표시)을 따릅니다.
 - Pleos Connect SDK: Vehicle 2.3.2, NaviHelper 3.0.5, FusedLocation 1.1.3, SpeechToText 3.3.1, TextToSpeech 3.3.1
 - minSdk 28, targetSdk 34, Kotlin 2.0.21, Jetpack Compose, Gradle 8.11.1, AGP 8.7.3
 - 서버: `https://roadtalk.dustinlab.duckdns.org` (문항 생성·첨삭·앞쪽 장소). 소스는 `server/` 에 있습니다.
