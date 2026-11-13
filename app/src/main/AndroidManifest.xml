@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- 차량(Pleos Connect)에서 동작하지만, 시연용 일반 안드로이드 기기에도 설치되도록 required=false -->
+    <uses-feature android:name="android.hardware.type.automotive" android:required="false" tools:replace="android:required" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!-- 내비: 정보 조회(회전 안내·주의 지점·도착 시간) -->
+    <uses-permission android:name="pleos.car.permission.NAVI_ROUTE" />
+    <!-- 위치: 진행 방향, 같은 길 복습(구역 알림) -->
+    <uses-permission android:name="pleos.car.permission.FUSED_LOCATION" />
+    <!-- 음성 -->
+    <uses-permission android:name="pleos.car.permission.STT_SERVICE" />
+    <uses-permission android:name="pleos.car.permission.TTS_SERVICE" />
+    <!-- 차량: 와이퍼, 방향지시등, 기어·브레이크, 좌석·안전벨트, 실내 온도, 배터리 (조회만, 제어 권한 없음) -->
+    <uses-permission android:name="pleos.car.permission.CAR_WINDOWS" />
+    <uses-permission android:name="pleos.car.permission.CAR_LIGHTS" />
+    <uses-permission android:name="pleos.car.permission.CAR_DRIVE" />
+    <uses-permission android:name="pleos.car.permission.CAR_SEATS" />
+    <uses-permission android:name="pleos.car.permission.CAR_CLIMATE" />
+    <uses-permission android:name="pleos.car.permission.CAR_ENERGY" />
+    <uses-permission android:name="pleos.car.permission.CAR_INFO" />
+
+    <application
+        android:label="로드토크"
+        android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher"
+        android:theme="@style/Theme.RoadTalk"
+        android:usesCleartextTraffic="false">
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:screenOrientation="unspecified"
+            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden|uiMode|density">
+            <!-- 주행 중에도 화면을 띄울 수 있게(운전 방해 최소화 화면) -->
+            <meta-data android:name="distractionOptimized" android:value="true" />
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+</manifest>

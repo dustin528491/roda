@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp" android:height="108dp" android:viewportWidth="108" android:viewportHeight="108">
+    <!-- 도로(두 차선)와 말풍선 -->
+    <path android:fillColor="#1B2433" android:pathData="M40,86 L50,30 L58,30 L68,86 Z"/>
+    <path android:fillColor="#FFD27A" android:pathData="M53,36 h2 v8 h-2z M53,50 h2 v8 h-2z M53,64 h2 v10 h-2z"/>
+    <path android:fillColor="#39D0B0" android:pathData="M30,24 h48 a8,8 0 0 1 8,8 v14 a8,8 0 0 1 -8,8 h-26 l-10,8 v-8 h-12 a8,8 0 0 1 -8,-8 v-14 a8,8 0 0 1 8,-8z"/>
+    <path android:fillColor="#04201A" android:pathData="M36,36 h36 v4 h-36z M36,44 h24 v4 h-24z"/>
+</vector>
