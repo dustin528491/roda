@@ -102,6 +102,7 @@ class AppModel(app: Application) : AndroidViewModel(app) {
     private val recentTargets = mutableListOf<String>()
     private val priority = ArrayDeque<Item>()
     private val askedPlaces = mutableSetOf<String>()
+    private var lastPlaceAtSec = -10_000
     private var serverLandmarks: List<Landmark> = emptyList()
     private var lmFetchedAt = 0L
     private var lmLat = 0.0; private var lmLon = 0.0
@@ -135,7 +136,7 @@ class AppModel(app: Application) : AndroidViewModel(app) {
         }
         sessionStartMs = System.currentTimeMillis()
         realStartMs = sessionStartMs
-        recentTopics.clear(); recentTargets.clear(); priority.clear(); askedPlaces.clear(); prefetched.clear()
+        recentTopics.clear(); recentTargets.clear(); priority.clear(); askedPlaces.clear(); prefetched.clear(); lastPlaceAtSec = -10_000
         val remain = car.state.value.remainSec.takeIf { it > 0 } ?: (if (useDemo) 41 * 60 else 30 * 60)
         planner.start(remain)
         _ui.update { it.copy(screen = Screen.DRIVE, demo = useDemo, running = true, plan = planner.plan, planTotalSec = planner.totalSec, events = planner.events.toList(), todayAttempts = emptyList(), last = null, item = null, stage = Stage.IDLE) }
@@ -175,10 +176,11 @@ class AppModel(app: Application) : AndroidViewModel(app) {
         _ui.update { it.copy(drive = s, gate = gate, phase = phase, elapsedSec = el, plan = planner.plan, planTotalSec = planner.totalSec, events = planner.events.toList()) }
         maybeFetchLandmarks(s)
         // 같은 길 복습: 예전에 표현을 배운 장소 근처를 지나면 우선 순서에 넣는다.
-        if (s.lat != 0.0) {
-            store.placeItems(s.lat, s.lon, u.settings.lang.code, sessionStartMs).forEach { item ->
-                val key = item.target
-                if (askedPlaces.add(key)) { priority.addLast(item); log("같은 길 복습: '${item.target}'") }
+        // 한 번 주행에 최대 3번, 5분(주행 시간 기준) 간격으로만 끼워 넣어 본 수업을 방해하지 않는다.
+        if (s.lat != 0.0 && askedPlaces.size < 3 && el - lastPlaceAtSec >= 300 && priority.isEmpty()) {
+            store.placeItems(s.lat, s.lon, u.settings.lang.code, sessionStartMs).firstOrNull { it.target !in askedPlaces }?.let { item ->
+                askedPlaces.add(item.target); lastPlaceAtSec = el
+                priority.addLast(item); log("같은 길 복습: '${item.target}'")
             }
         }
         if (phase == Phase.DONE && u.phase != Phase.DONE) viewModelScope.launch { arrive() }
