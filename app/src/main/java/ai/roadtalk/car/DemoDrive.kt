@@ -20,11 +20,11 @@ import kotlin.math.cos
 import kotlin.math.roundToInt
 import kotlin.math.sqrt
 
-enum class Scenario(val ko: String, val desc: String) {
-    COMMUTE("출근길", "분당 정자동 → 강남대로 회사 · 41분 · 중간에 정체와 비"),
-    RAINY_HOME("비 오는 퇴근길", "회사 → 마트 들러 집 · 와이퍼 작동"),
-    FAMILY("주말 가족 드라이브", "뒷좌석에 아이 탑승 · 함께 퀴즈"),
-    TRAVEL("여행 2주 전", "스페인어 렌터카·주유 표현 · 배터리 낮음"),
+enum class Scenario(val ko: String, val desc: String, val dest: String, val destKind: String) {
+    COMMUTE("출근길", "분당 정자동 → 강남대로 회사 · 41분 · 중간에 정체와 비", "현대자동차 강남대로사옥", "office"),
+    RAINY_HOME("비 오는 퇴근길", "회사 → 마트 들러 집 · 와이퍼 작동", "이마트 양재점", "mart"),
+    FAMILY("주말 가족 드라이브", "뒷좌석에 아이 탑승 · 함께 퀴즈", "서울숲 공원", "other"),
+    TRAVEL("여행 2주 전", "스페인어 렌터카·주유 표현 · 배터리 낮음", "강남대로 충전소", "charger"),
 }
 
 /**
@@ -54,10 +54,10 @@ class DemoDrive(private val car: PleosCar, private val scope: CoroutineScope) {
     private data class Lm(val at: Double, val name: String, val cat: String)
 
     private val turns = listOf(
-        Turn(0.05, TurnKind.RIGHT, "정자일로 방향 우회전"),
+        Turn(0.05, TurnKind.RIGHT, "정자일로 · 우회전"),
         Turn(0.27, TurnKind.ENTER_HIGHWAY, "판교IC · 경부고속도로 서울 방향"),
-        Turn(0.74, TurnKind.EXIT_HIGHWAY, "양재IC 진출"),
-        Turn(0.83, TurnKind.RIGHT, "양재역 사거리 · 강남대로 방향 우회전"),
+        Turn(0.74, TurnKind.EXIT_HIGHWAY, "양재IC · 진출"),
+        Turn(0.83, TurnKind.RIGHT, "양재역 · 강남대로 방향 우회전"),
         Turn(1.00, TurnKind.ARRIVE, "목적지"),
     )
     private val marks = listOf(Mark(0.12, Caution.SCHOOL_ZONE), Mark(0.50, Caution.SPEED_CAMERA), Mark(0.90, Caution.SPEED_CAMERA))
@@ -81,12 +81,7 @@ class DemoDrive(private val car: PleosCar, private val scope: CoroutineScope) {
         running = true
         car.naviFromDemo = true
         car.markDemo()
-        val dest = when (s) {
-            Scenario.COMMUTE -> "현대자동차 강남대로사옥" to "office"
-            Scenario.RAINY_HOME -> "이마트 양재점" to "mart"
-            Scenario.FAMILY -> "서울숲 공원" to "other"
-            Scenario.TRAVEL -> "충전소 · 강남대로" to "charger"
-        }
+        val dest = s.dest to s.destKind
         car.applyDemo {
             it.copy(
                 destinationName = dest.first, destinationKind = dest.second, routeActive = true, arrived = false,
@@ -138,6 +133,7 @@ class DemoDrive(private val car: PleosCar, private val scope: CoroutineScope) {
         val remainM = (total - d).roundToInt().coerceAtLeast(0)
         val next = turns.firstOrNull { it.at * total > d + 5 }
         val nextTurn = next?.let { NextTurn(it.kind, (it.at * total - d).roundToInt(), it.desc) }
+        val ahead = turns.filter { it.at * total > d + 5 }.map { NextTurn(it.kind, (it.at * total - d).roundToInt(), it.desc) }
         val cautions = marks.map { CautionAhead(it.kind, (it.at * total - d).roundToInt()) }.filter { it.distanceM in 0..1500 }
         val landmarks = lms.map { Landmark(it.name, it.cat, (it.at * total - d).roundToInt()) }.filter { it.distanceM in 50..800 }
         val traffic = when {
@@ -151,7 +147,7 @@ class DemoDrive(private val car: PleosCar, private val scope: CoroutineScope) {
         car.applyDemo {
             it.copy(
                 lat = lat, lon = lon, heading = heading,
-                remainSec = remain, remainM = remainM, nextTurn = nextTurn, cautions = cautions,
+                remainSec = remain, remainM = remainM, nextTurn = nextTurn, ahead = ahead, cautions = cautions,
                 traffic = traffic, speedLimit = if (f in 0.27..0.74) 100 else 50, landmarks = landmarks,
                 // 차량 SDK가 실제로 연결돼 있으면 Virtual Console 값을 존중하고, 아니면 시나리오 값을 넣는다.
                 // Virtual Console에서 켠 방향지시등·와이퍼는 그대로 반영하고, 아니면 시나리오 값을 쓴다.

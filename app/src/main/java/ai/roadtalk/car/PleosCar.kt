@@ -99,8 +99,8 @@ class PleosCar(private val context: Context) {
     private val naviListener = object : NaviHelperEventListener {
         override fun onTBTInfo(list: List<TBTInfo>) {
             if (naviFromDemo) return
-            val first = list.firstOrNull()
-            _state.update { it.copy(nextTurn = first?.let { t -> NextTurn(turnKind(t.type), t.distance.toInt(), t.description) }) }
+            val all = list.map { t -> NextTurn(turnKind(t.type), t.distance.toInt(), t.description) }
+            _state.update { it.copy(nextTurn = all.firstOrNull(), ahead = all.take(6)) }
         }
 
         override fun onCautionPointInfo(list: List<CautionPoint>) {

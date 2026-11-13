@@ -58,6 +58,8 @@ data class Settings(
     val speedup: Double = 8.0,
 )
 
+data class RouteMark(val label: String, val frac: Float, val next: Boolean = false)
+
 data class Ui(
     val screen: Screen = Screen.START,
     val settings: Settings = Settings(),
@@ -79,6 +81,9 @@ data class Ui(
     val todayAttempts: List<Attempt> = emptyList(),
     val serverOnline: Boolean = true,
     val log: List<String> = emptyList(),
+    /** 길 그림: 시간 기준 0~1 위치에 놓인 안내 지점들. */
+    val marks: List<RouteMark> = emptyList(),
+    val routeFrac: Float = 0f,
 )
 
 class AppModel(app: Application) : AndroidViewModel(app) {
@@ -136,7 +141,7 @@ class AppModel(app: Application) : AndroidViewModel(app) {
         }
         sessionStartMs = System.currentTimeMillis()
         realStartMs = sessionStartMs
-        recentTopics.clear(); recentTargets.clear(); priority.clear(); askedPlaces.clear(); prefetched.clear(); lastPlaceAtSec = -10_000
+        recentTopics.clear(); recentTargets.clear(); priority.clear(); askedPlaces.clear(); prefetched.clear(); lastPlaceAtSec = -10_000; markAt.clear()
         val remain = car.state.value.remainSec.takeIf { it > 0 } ?: (if (useDemo) 41 * 60 else 30 * 60)
         planner.start(remain)
         _ui.update { it.copy(screen = Screen.DRIVE, demo = useDemo, running = true, plan = planner.plan, planTotalSec = planner.totalSec, events = planner.events.toList(), todayAttempts = emptyList(), last = null, item = null, stage = Stage.IDLE) }
@@ -174,6 +179,7 @@ class AppModel(app: Application) : AndroidViewModel(app) {
         planner.onRemainChanged(el, s.remainSec)?.let { ev -> log(ev.textKo) }
         val phase = planner.phase(el, s.remainSec, s.remainM, s.arrived || (!u.demo && s.gear == ai.roadtalk.core.Gear.PARK && el > 90))
         _ui.update { it.copy(drive = s, gate = gate, phase = phase, elapsedSec = el, plan = planner.plan, planTotalSec = planner.totalSec, events = planner.events.toList()) }
+        updateRoute(s, el)
         maybeFetchLandmarks(s)
         // 같은 길 복습: 예전에 표현을 배운 장소 근처를 지나면 우선 순서에 넣는다.
         // 한 번 주행에 최대 3번, 5분(주행 시간 기준) 간격으로만 끼워 넣어 본 수업을 방해하지 않는다.
@@ -184,6 +190,24 @@ class AppModel(app: Application) : AndroidViewModel(app) {
             }
         }
         if (phase == Phase.DONE && u.phase != Phase.DONE) viewModelScope.launch { arrive() }
+    }
+
+    private val markAt = LinkedHashMap<String, Float>()
+
+    /** 남은 거리 비율을 남은 시간에 곱해, 앞의 안내 지점을 수업 시간 축 위에 놓는다. 지나간 지점은 마지막 위치에 남는다. */
+    private fun updateRoute(s: DriveState, el: Int) {
+        val total = planner.totalSec.coerceAtLeast(1)
+        val now = (el.toFloat() / total).coerceIn(0f, 1f)
+        val remainM = s.remainM.coerceAtLeast(1)
+        s.ahead.forEach { t ->
+            val label = if (t.kind == ai.roadtalk.core.TurnKind.ARRIVE) "도착" else t.description.substringBefore(" ·").ifBlank { Gate.turnLabel(t.kind) }.take(8)
+            markAt[label] = (now + (t.distanceM.toFloat() / remainM).coerceIn(0f, 1f) * (1f - now)).coerceIn(0f, 1f)
+        }
+        val nextLabel = s.ahead.firstOrNull()?.let { t -> if (t.kind == ai.roadtalk.core.TurnKind.ARRIVE) "도착" else t.description.substringBefore(" ·").ifBlank { Gate.turnLabel(t.kind) }.take(8) }
+        val marks = markAt.entries.sortedBy { it.value }.fold(mutableListOf<RouteMark>()) { acc, e ->
+            if (acc.isEmpty() || e.value - acc.last().frac > 0.07f || e.key == "도착") acc += RouteMark(e.key, e.value, e.key == nextLabel); acc
+        }
+        _ui.update { it.copy(marks = marks, routeFrac = now) }
     }
 
     private fun maybeFetchLandmarks(s: DriveState) {

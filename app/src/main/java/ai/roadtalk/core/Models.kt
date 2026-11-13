@@ -34,6 +34,8 @@ data class DriveState(
     val remainSec: Int = 0,
     val remainM: Int = 0,
     val nextTurn: NextTurn? = null,
+    /** 앞으로 지나갈 안내 지점들(가까운 순). 화면 아래 길 그림에 쓴다. */
+    val ahead: List<NextTurn> = emptyList(),
     val cautions: List<CautionAhead> = emptyList(),
     val traffic: Traffic = Traffic.UNKNOWN,
     val speedLimit: Int = 0,
