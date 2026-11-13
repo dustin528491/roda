@@ -1,4 +1,4 @@
-package ai.roadtalk.ui
+package ai.roda.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -91,7 +91,7 @@ object T {
 }
 
 @Composable
-fun RoadTalkTheme(content: @Composable () -> Unit) {
+fun RodaTheme(content: @Composable () -> Unit) {
     MaterialTheme(
         colorScheme = lightColorScheme(primary = P.accent, onPrimary = P.basic00, background = P.surface, surface = P.surface, onBackground = P.textPrimary, onSurface = P.textPrimary),
         content = content,
@@ -118,7 +118,7 @@ fun Header(icon: ImageVector, subtitle: @Composable RowScope.() -> Unit, trailin
                 Icon(icon, null, tint = P.basic00, modifier = Modifier.size(38.dp))
             }
             Spacer(Modifier.width(20.dp))
-            Text("로드토크", style = T.titleM, maxLines = 1)
+            Text("로다", style = T.titleM, maxLines = 1)
             Spacer(Modifier.width(22.dp))
             Box(Modifier.height(32.dp).width(1.dp).background(P.divider))
             Spacer(Modifier.width(22.dp))

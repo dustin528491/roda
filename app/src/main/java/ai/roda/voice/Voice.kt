@@ -1,4 +1,4 @@
-package ai.roadtalk.voice
+package ai.roda.voice
 
 import ai.pleos.playground.stt.SpeechToText
 import ai.pleos.playground.stt.listener.OnInitializeListener as SttInit
@@ -6,7 +6,7 @@ import ai.pleos.playground.stt.listener.ResultListener
 import ai.pleos.playground.tts.TextToSpeech as PleosTts
 import ai.pleos.playground.tts.listener.EventListener as TtsEvents
 import ai.pleos.playground.tts.listener.OnInitializeListener as TtsInit
-import ai.roadtalk.core.Link
+import ai.roda.core.Link
 import android.content.Context
 import android.speech.tts.TextToSpeech as AndroidTts
 import android.speech.tts.UtteranceProgressListener
@@ -22,7 +22,7 @@ import java.util.UUID
  * Pleos 음성 서비스가 없는 기기(시연용 태블릿 등)에서는 안드로이드 기본 TTS로 말하고 인식은 시연용 답변으로 대신한다.
  */
 class Voice(private val context: Context, private val onStatus: (stt: Link?, tts: Link?) -> Unit) {
-    private val tag = "RoadTalk/Voice"
+    private val tag = "Roda/Voice"
 
     private var pleosTts: PleosTts? = null
     private var pleosStt: SpeechToText? = null

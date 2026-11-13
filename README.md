@@ -1,4 +1,4 @@
-# 로드토크 (RoadTalk)
+# 로다 (RODA · ROad Dialogue Assistant)
 
 **출퇴근길 앞에 보이는 도로·표지·건물을 교재로 삼고, 남은 운전 시간에 맞춰 수업을 그때그때 짜 주는 차량 전용 외국어 회화 코치**
 
@@ -21,11 +21,11 @@
 
 ## 실행 방법
 
-1. `apk/RoadTalk_release.apk` 를 Pleos Connect 에뮬레이터에 설치합니다.
+1. `apk/RODA_release.apk` 를 Pleos Connect 에뮬레이터에 설치합니다.
    ```
-   adb install -r -g apk/RoadTalk_release.apk
+   adb install -r -g apk/RODA_release.apk
    ```
-2. 앱 목록에서 **로드토크**를 실행하고 권한을 허용합니다(위치·내비·음성·차량 조회).
+2. 앱 목록에서 **로다**를 실행하고 권한을 허용합니다(위치·내비·음성·차량 조회).
 3. 내비에 목적지가 잡혀 있으면 **출발하며 시작**, 없으면 **데모 주행으로 시작**을 누릅니다.
    - 데모 주행은 분당 정자동 → 강남대로 출근길(41분, 중간 정체·비)을 8배 빠르게 재현합니다. 내비·위치 값만 대신 넣고, 와이퍼·방향지시등 등 차량 값은 Virtual Console에서 바꾸면 그대로 반영됩니다.
    - 에뮬레이터에 마이크 입력이 없으면 데모 주행 중에는 시연용 답변으로 이어 갑니다. 설정 > 음성 입력에서 고를 수 있습니다.
@@ -38,7 +38,7 @@
 - 디자인: Pleos Connect 디자인 가이드의 색·글자 토큰과, 대화형 기본 앱인 Gleo AI의 화면 형식(가운데 정렬, 둥근 패널, 상태별 색 알약)을 따릅니다.
 - Pleos Connect SDK: Vehicle 2.3.2, NaviHelper 3.0.5, FusedLocation 1.1.3, SpeechToText 3.3.1, TextToSpeech 3.3.1
 - minSdk 28, targetSdk 34, Kotlin 2.0.21, Jetpack Compose, Gradle 8.11.1, AGP 8.7.3
-- 서버: `https://roadtalk.dustinlab.duckdns.org` (문항 생성·첨삭·앞쪽 장소). 소스는 `server/` 에 있습니다.
+- 서버: `https://roda.dustinlab.duckdns.org` (문항 생성·첨삭·앞쪽 장소). 소스는 `server/` 에 있습니다.
 
 ## 빌드
 
@@ -51,7 +51,7 @@
 ## 구성
 
 ```
-app/src/main/java/ai/roadtalk/
+app/src/main/java/ai/roda/
   car/PleosCar.kt      Pleos 내비·위치·차량 SDK → 하나의 '지금 상황'
   car/DemoDrive.kt     시연용 주행 시나리오 4종
   voice/Voice.kt       Pleos TTS·STT (ON_DEVICE)
@@ -66,6 +66,6 @@ server/                FastAPI 서버(문항 생성·첨삭: LLM, 앞쪽 장소:
 
 ## APK
 
-- `apk/RoadTalk_release.apk`
+- `apk/RODA_release.apk`
 
 장소 정보 © OpenStreetMap contributors (ODbL).

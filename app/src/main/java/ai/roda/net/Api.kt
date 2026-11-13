@@ -1,8 +1,8 @@
-package ai.roadtalk.net
+package ai.roda.net
 
-import ai.roadtalk.core.Item
-import ai.roadtalk.core.ItemKind
-import ai.roadtalk.core.Landmark
+import ai.roda.core.Item
+import ai.roda.core.ItemKind
+import ai.roda.core.Landmark
 import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -51,7 +51,7 @@ data class LandmarkRes(val items: List<LandmarkDto> = emptyList())
 data class LandmarkDto(val name: String, val category: String, val distanceM: Int, val side: String = "ahead")
 
 /**
- * RoadTalk 서버. 인식된 '글자'만 보낸다(음성 원본은 차 밖으로 보내지 않는다).
+ * RODA 서버. 인식된 '글자'만 보낸다(음성 원본은 차 밖으로 보내지 않는다).
  * 서버가 없거나 느리면 null을 돌려주고, 앱은 내장 문장으로 계속한다.
  */
 class Api(private val base: String) {
@@ -76,7 +76,7 @@ class Api(private val base: String) {
             c.connectTimeout = 4000; c.readTimeout = 8000
             val body = c.inputStream.bufferedReader().use { it.readText() }
             json.decodeFromString<LandmarkRes>(body).items.map { Landmark(it.name, it.category, it.distanceM, it.side) }
-        }.onFailure { Log.w("RoadTalk/Api", "landmarks: $it") }.getOrDefault(emptyList())
+        }.onFailure { Log.w("Roda/Api", "landmarks: $it") }.getOrDefault(emptyList())
     }
 
     private suspend inline fun <reified A, reified B> post(path: String, body: A, timeoutMs: Int): B? = withContext(Dispatchers.IO) {
@@ -90,6 +90,6 @@ class Api(private val base: String) {
             val text = c.inputStream.bufferedReader().use { it.readText() }
             online = true
             json.decodeFromString<B>(text)
-        }.onFailure { Log.w("RoadTalk/Api", "$path: $it"); online = false }.getOrNull()
+        }.onFailure { Log.w("Roda/Api", "$path: $it"); online = false }.getOrNull()
     }
 }

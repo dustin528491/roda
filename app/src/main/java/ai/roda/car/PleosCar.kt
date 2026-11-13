@@ -1,4 +1,4 @@
-package ai.roadtalk.car
+package ai.roda.car
 
 import ai.pleos.playground.location.fused.FusedLocation
 import ai.pleos.playground.location.fused.listener.FusedLocationListener
@@ -34,16 +34,16 @@ import ai.pleos.playground.vehicle.listener.SeatBeltBuckledStateListener
 import ai.pleos.playground.vehicle.listener.SeatOccupancyListener
 import ai.pleos.playground.vehicle.listener.TurnSignalStateListener
 import ai.pleos.playground.vehicle.listener.WiperStateListener
-import ai.roadtalk.core.Caution
-import ai.roadtalk.core.CautionAhead
-import ai.roadtalk.core.DriveState
-import ai.roadtalk.core.Gear
-import ai.roadtalk.core.Link
-import ai.roadtalk.core.NextTurn
-import ai.roadtalk.core.SdkStatus
-import ai.roadtalk.core.Traffic
-import ai.roadtalk.core.TurnKind
-import ai.roadtalk.core.TurnSignal
+import ai.roda.core.Caution
+import ai.roda.core.CautionAhead
+import ai.roda.core.DriveState
+import ai.roda.core.Gear
+import ai.roda.core.Link
+import ai.roda.core.NextTurn
+import ai.roda.core.SdkStatus
+import ai.roda.core.Traffic
+import ai.roda.core.TurnKind
+import ai.roda.core.TurnSignal
 import android.content.Context
 import android.util.Log
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -55,7 +55,7 @@ import kotlinx.coroutines.flow.update
  * SDK 서비스가 없는 기기에서도 앱이 죽지 않도록 모든 호출을 감싼다.
  */
 class PleosCar(private val context: Context) {
-    private val tag = "RoadTalk/Car"
+    private val tag = "Roda/Car"
 
     private val _state = MutableStateFlow(DriveState())
     val state: StateFlow<DriveState> = _state

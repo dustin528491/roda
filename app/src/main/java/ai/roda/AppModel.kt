@@ -1,34 +1,34 @@
-package ai.roadtalk
+package ai.roda
 
-import ai.roadtalk.car.DemoDrive
-import ai.roadtalk.car.PleosCar
-import ai.roadtalk.car.Scenario
-import ai.roadtalk.core.Attempt
-import ai.roadtalk.core.DriveState
-import ai.roadtalk.core.Item
-import ai.roadtalk.core.ItemKind
-import ai.roadtalk.core.KOREAN
-import ai.roadtalk.core.Lang
-import ai.roadtalk.core.Landmark
-import ai.roadtalk.core.Link
-import ai.roadtalk.core.SdkStatus
-import ai.roadtalk.lesson.Bank
-import ai.roadtalk.lesson.Gate
-import ai.roadtalk.lesson.GateDecision
-import ai.roadtalk.lesson.Phase
-import ai.roadtalk.lesson.Plan
-import ai.roadtalk.lesson.PlanEvent
-import ai.roadtalk.lesson.Planner
-import ai.roadtalk.lesson.Similarity
-import ai.roadtalk.lesson.Store
-import ai.roadtalk.lesson.Topic
-import ai.roadtalk.lesson.TopicPicker
-import ai.roadtalk.lesson.Window
-import ai.roadtalk.net.Api
-import ai.roadtalk.net.FeedbackReq
-import ai.roadtalk.net.GenerateReq
-import ai.roadtalk.net.TurnContext
-import ai.roadtalk.voice.Voice
+import ai.roda.car.DemoDrive
+import ai.roda.car.PleosCar
+import ai.roda.car.Scenario
+import ai.roda.core.Attempt
+import ai.roda.core.DriveState
+import ai.roda.core.Item
+import ai.roda.core.ItemKind
+import ai.roda.core.KOREAN
+import ai.roda.core.Lang
+import ai.roda.core.Landmark
+import ai.roda.core.Link
+import ai.roda.core.SdkStatus
+import ai.roda.lesson.Bank
+import ai.roda.lesson.Gate
+import ai.roda.lesson.GateDecision
+import ai.roda.lesson.Phase
+import ai.roda.lesson.Plan
+import ai.roda.lesson.PlanEvent
+import ai.roda.lesson.Planner
+import ai.roda.lesson.Similarity
+import ai.roda.lesson.Store
+import ai.roda.lesson.Topic
+import ai.roda.lesson.TopicPicker
+import ai.roda.lesson.Window
+import ai.roda.net.Api
+import ai.roda.net.FeedbackReq
+import ai.roda.net.GenerateReq
+import ai.roda.net.TurnContext
+import ai.roda.voice.Voice
 import android.app.Application
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
@@ -87,7 +87,7 @@ data class Ui(
 )
 
 class AppModel(app: Application) : AndroidViewModel(app) {
-    private val tag = "RoadTalk/App"
+    private val tag = "Roda/App"
     val car = PleosCar(app)
     private val demo = DemoDrive(car, viewModelScope)
     private val voice = Voice(app) { stt, tts -> car.setVoiceStatus(stt, tts) }
@@ -177,7 +177,7 @@ class AppModel(app: Application) : AndroidViewModel(app) {
         if (!u.running) { _ui.update { it.copy(drive = s, gate = gate) }; return }
         val el = elapsedSec()
         planner.onRemainChanged(el, s.remainSec)?.let { ev -> log(ev.textKo) }
-        val phase = planner.phase(el, s.remainSec, s.remainM, s.arrived || (!u.demo && s.gear == ai.roadtalk.core.Gear.PARK && el > 90))
+        val phase = planner.phase(el, s.remainSec, s.remainM, s.arrived || (!u.demo && s.gear == ai.roda.core.Gear.PARK && el > 90))
         _ui.update { it.copy(drive = s, gate = gate, phase = phase, elapsedSec = el, plan = planner.plan, planTotalSec = planner.totalSec, events = planner.events.toList()) }
         updateRoute(s, el)
         maybeFetchLandmarks(s)
@@ -200,10 +200,10 @@ class AppModel(app: Application) : AndroidViewModel(app) {
         val now = (el.toFloat() / total).coerceIn(0f, 1f)
         val remainM = s.remainM.coerceAtLeast(1)
         s.ahead.forEach { t ->
-            val label = if (t.kind == ai.roadtalk.core.TurnKind.ARRIVE) "도착" else t.description.substringBefore(" ·").ifBlank { Gate.turnLabel(t.kind) }.take(8)
+            val label = if (t.kind == ai.roda.core.TurnKind.ARRIVE) "도착" else t.description.substringBefore(" ·").ifBlank { Gate.turnLabel(t.kind) }.take(8)
             markAt[label] = (now + (t.distanceM.toFloat() / remainM).coerceIn(0f, 1f) * (1f - now)).coerceIn(0f, 1f)
         }
-        val nextLabel = s.ahead.firstOrNull()?.let { t -> if (t.kind == ai.roadtalk.core.TurnKind.ARRIVE) "도착" else t.description.substringBefore(" ·").ifBlank { Gate.turnLabel(t.kind) }.take(8) }
+        val nextLabel = s.ahead.firstOrNull()?.let { t -> if (t.kind == ai.roda.core.TurnKind.ARRIVE) "도착" else t.description.substringBefore(" ·").ifBlank { Gate.turnLabel(t.kind) }.take(8) }
         val marks = markAt.entries.sortedBy { it.value }.fold(mutableListOf<RouteMark>()) { acc, e ->
             if (acc.isEmpty() || e.value - acc.last().frac > 0.07f || e.key == "도착") acc += RouteMark(e.key, e.value, e.key == nextLabel); acc
         }

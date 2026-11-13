@@ -1,4 +1,4 @@
-"""RoadTalk 서버.
+"""RODA 서버.
 앱이 보낸 '지금 상황'으로 회화 문항을 만들고(/v1/generate), 인식된 글자를 첨삭하고(/v1/feedback),
 진행 방향 앞쪽의 장소를 OpenStreetMap에서 찾는다(/v1/landmarks).
 음성은 받지 않는다. 글자만 받는다.
@@ -11,7 +11,7 @@ import httpx
 from fastapi import FastAPI, HTTPException, Request
 from pydantic import BaseModel, Field
 
-log = logging.getLogger("roadtalk")
+log = logging.getLogger("roda")
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 
 LLM_BASE = os.environ.get("LLM_BASE", "http://100.89.128.73:8791/v1")
@@ -29,7 +29,7 @@ def llm_key() -> str:
     return k
 
 
-app = FastAPI(title="RoadTalk", docs_url=None, redoc_url=None)
+app = FastAPI(title="RODA", docs_url=None, redoc_url=None)
 http = httpx.Client(timeout=httpx.Timeout(12.0, connect=4.0))
 
 _hits: dict[str, deque] = defaultdict(deque)
@@ -103,7 +103,7 @@ class GenerateReq(BaseModel):
     avoid: list[str] = Field(default_factory=list)
 
 
-GEN_SYSTEM = """You are RoadTalk, a spoken conversation coach for a Korean driver commuting by car.
+GEN_SYSTEM = """You are RODA, a spoken conversation coach for a Korean driver commuting by car.
 The driver cannot look at the screen. Everything is heard, so keep it short and speakable.
 Make ONE practice item about what the driver is experiencing right now on the road (the context).
 Never ask the driver to look sideways, read signs, or do anything that takes attention off driving.
@@ -242,7 +242,7 @@ def landmarks(lat: float, lon: float, heading: float = 0.0, request: Request = N
             r = None
             for url in OVERPASS:
                 try:
-                    r = http.post(url, data={"data": q}, headers={"User-Agent": "RoadTalk/0.1 (contest demo)"})
+                    r = http.post(url, data={"data": q}, headers={"User-Agent": "Roda/0.1 (contest demo)"})
                     r.raise_for_status()
                     break
                 except Exception as e:

@@ -1,6 +1,6 @@
-package ai.roadtalk
+package ai.roda
 
-import ai.roadtalk.ui.App
+import ai.roda.ui.App
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent

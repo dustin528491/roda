@@ -1,19 +1,19 @@
-package ai.roadtalk.ui
+package ai.roda.ui
 
-import ai.roadtalk.AppModel
-import ai.roadtalk.InputMode
-import ai.roadtalk.RouteMark
-import ai.roadtalk.Screen
-import ai.roadtalk.Stage
-import ai.roadtalk.Ui
-import ai.roadtalk.car.Scenario
-import ai.roadtalk.core.Attempt
-import ai.roadtalk.core.ItemKind
-import ai.roadtalk.core.Lang
-import ai.roadtalk.core.Link
-import ai.roadtalk.lesson.Phase
-import ai.roadtalk.lesson.Window
-import ai.roadtalk.lesson.fmtMin
+import ai.roda.AppModel
+import ai.roda.InputMode
+import ai.roda.RouteMark
+import ai.roda.Screen
+import ai.roda.Stage
+import ai.roda.Ui
+import ai.roda.car.Scenario
+import ai.roda.core.Attempt
+import ai.roda.core.ItemKind
+import ai.roda.core.Lang
+import ai.roda.core.Link
+import ai.roda.lesson.Phase
+import ai.roda.lesson.Window
+import ai.roda.lesson.fmtMin
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -72,7 +72,7 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun App(vm: AppModel) {
     val ui by vm.ui.collectAsState()
-    RoadTalkTheme {
+    RodaTheme {
         Box(Modifier.fillMaxSize().background(P.surface)) {
             when (ui.screen) {
                 Screen.START -> StartScreen(ui, vm)

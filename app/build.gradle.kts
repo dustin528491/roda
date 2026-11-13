@@ -13,15 +13,15 @@ val signingProps = Properties().apply {
 }
 
 android {
-    namespace = "ai.roadtalk"
+    namespace = "ai.roda"
     compileSdk = 35
     defaultConfig {
-        applicationId = "ai.roadtalk"
+        applicationId = "ai.roda"
         minSdk = 28
         targetSdk = 34
         versionCode = 1
         versionName = "0.1.0"
-        buildConfigField("String", "SERVER_URL", "\"https://roadtalk.dustinlab.duckdns.org\"")
+        buildConfigField("String", "SERVER_URL", "\"https://roda.dustinlab.duckdns.org\"")
     }
     signingConfigs {
         create("release") {

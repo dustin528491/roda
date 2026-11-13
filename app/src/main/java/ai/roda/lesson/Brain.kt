@@ -1,11 +1,11 @@
-package ai.roadtalk.lesson
+package ai.roda.lesson
 
-import ai.roadtalk.core.Caution
-import ai.roadtalk.core.DriveState
-import ai.roadtalk.core.Gear
-import ai.roadtalk.core.Traffic
-import ai.roadtalk.core.TurnKind
-import ai.roadtalk.core.TurnSignal
+import ai.roda.core.Caution
+import ai.roda.core.DriveState
+import ai.roda.core.Gear
+import ai.roda.core.Traffic
+import ai.roda.core.TurnKind
+import ai.roda.core.TurnSignal
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt

@@ -1,9 +1,9 @@
-package ai.roadtalk.lesson
+package ai.roda.lesson
 
-import ai.roadtalk.core.Item
-import ai.roadtalk.core.ItemKind
-import ai.roadtalk.core.Lang
-import ai.roadtalk.core.Landmark
+import ai.roda.core.Item
+import ai.roda.core.ItemKind
+import ai.roda.core.Lang
+import ai.roda.core.Landmark
 import android.content.Context
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
@@ -31,9 +31,12 @@ class Bank(context: Context) {
 
     private val used = mutableSetOf<String>()
 
-    fun demoAnswer(id: String): String? = all.firstOrNull { it.id == id }?.demoAnswer?.takeIf { it.isNotBlank() }
+    /** 장소 이름을 끼워 넣는 문장({name})은 시연용 답변을 따로 두지 않고 목표 문장에서 만든다. */
+    fun demoAnswer(id: String): String? = all.firstOrNull { it.id == id }?.demoAnswer?.takeIf { it.isNotBlank() && !it.contains("{") }
 
     fun pick(lang: Lang, topic: String, long: Boolean, listenOnly: Boolean, landmark: Landmark? = null): Item? {
+        // 장소 문장은 원어로 읽을 수 있는 이름일 때만 쓴다. 한글 이름은 서버가 영어 이름으로 바꿔 줄 때만 다룬다.
+        if (topic == "landmark" && (landmark == null || landmark.name.any { it in '\uAC00'..'\uD7A3' })) return null
         val pool = all.filter { it.lang == lang.code && it.topic == topic }
             .filter { if (listenOnly) it.kind == "listen" else it.kind != "listen" || topic == "school_zone" }
         if (pool.isEmpty()) return null

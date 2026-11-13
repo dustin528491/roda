@@ -1,8 +1,8 @@
-package ai.roadtalk.lesson
+package ai.roda.lesson
 
-import ai.roadtalk.core.Attempt
-import ai.roadtalk.core.Item
-import ai.roadtalk.core.ItemKind
+import ai.roda.core.Attempt
+import ai.roda.core.Item
+import ai.roda.core.ItemKind
 import android.content.Context
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
@@ -56,7 +56,7 @@ private data class Saved(val attempts: List<SavedAttempt> = emptyList())
  * 학습 기록. '장소–표현–정답률'을 기기 안에 저장하고, 같은 길을 다시 지날 때 꺼낸다.
  */
 class Store(context: Context) {
-    private val prefs = context.getSharedPreferences("roadtalk", Context.MODE_PRIVATE)
+    private val prefs = context.getSharedPreferences("roda", Context.MODE_PRIVATE)
     private val json = Json { ignoreUnknownKeys = true }
     private var data: Saved = runCatching { json.decodeFromString<Saved>(prefs.getString("data", null) ?: "{}") }.getOrDefault(Saved())
 
