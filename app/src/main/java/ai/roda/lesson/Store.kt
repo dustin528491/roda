@@ -50,7 +50,13 @@ data class SavedAttempt(
 )
 
 @Serializable
-private data class Saved(val attempts: List<SavedAttempt> = emptyList())
+data class SavedScene(
+    val canDo: String, val base: String, val hintKo: String, val variations: List<Variation> = emptyList(),
+    val lat: Double = 0.0, val lon: Double = 0.0, val place: String = "", val score: Float = 0f, val at: Long = 0, val lang: String = "en",
+)
+
+@Serializable
+private data class Saved(val attempts: List<SavedAttempt> = emptyList(), val scenes: List<SavedScene> = emptyList())
 
 /**
  * 학습 기록. '장소–표현–정답률'을 기기 안에 저장하고, 같은 길을 다시 지날 때 꺼낸다.
@@ -68,6 +74,34 @@ class Store(context: Context) {
         data = data.copy(attempts = (data.attempts + s).takeLast(600))
         prefs.edit().putString("data", json.encodeToString(data)).apply()
     }
+
+    val scenes get() = data.scenes
+
+    fun recordScene(sc: Scene, score: Float, lat: Double, lon: Double, place: String) {
+        val s = SavedScene(sc.canDoKo, sc.base, sc.hintKo, sc.variations.take(2), lat, lon, place, score, System.currentTimeMillis(), sc.lang)
+        data = data.copy(scenes = (data.scenes + s).takeLast(300))
+        prefs.edit().putString("data", json.encodeToString(data)).apply()
+    }
+
+    /** 오늘 약했던 문장을 한국어 뜻만 듣고 말해 보는 복습 상황. */
+    fun reviewScene(sinceMs: Long, lang: String): Scene? {
+        val todays = data.attempts.filter { it.at >= sinceMs && it.lang == lang && it.kind != ItemKind.LISTEN.name && it.heard.isNotBlank() && it.hintKo.isNotBlank() }
+        val worst = todays.groupBy { it.target }.map { (_, v) -> v.minBy { it.score } }.sortedBy { it.score }.take(4)
+        if (worst.isEmpty()) return null
+        return Scene(id = "review-${System.currentTimeMillis()}", topic = "review", lang = lang, canDoKo = "오늘 복습", source = "review",
+            variations = worst.map { Variation(it.hintKo, it.better.ifBlank { it.target }, it.hintKo) })
+    }
+
+    /** 예전(오늘 이전)에 이 근처에서 말했던 상황을 짧게 다시 묻는다. */
+    fun placeScene(lat: Double, lon: Double, lang: String, beforeMs: Long, asked: Set<String>, radiusM: Double = 200.0): Scene? {
+        val s = data.scenes.filter { it.at < beforeMs && it.lang == lang && it.lat != 0.0 && it.base !in asked && distM(lat, lon, it.lat, it.lon) < radiusM }.minByOrNull { it.score } ?: return null
+        return Scene(id = "place-${s.at}", topic = "place", lang = lang, canDoKo = s.canDo, source = "place",
+            variations = listOf(Variation(s.hintKo, s.base, s.hintKo)) + s.variations.take(1))
+    }
+
+    /** 예전에 말할 수 있게 된(점수 0.8 이상) 상황이 이 근처에 있는가. */
+    fun knownNear(lat: Double, lon: Double, lang: String, beforeMs: Long, radiusM: Double = 300.0): Boolean =
+        data.scenes.any { it.at < beforeMs && it.lang == lang && it.score >= 0.8f && it.lat != 0.0 && distM(lat, lon, it.lat, it.lon) < radiusM }
 
     fun clear() { data = Saved(); prefs.edit().remove("data").apply() }
 

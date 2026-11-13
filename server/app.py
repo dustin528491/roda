@@ -183,6 +183,62 @@ def feedback(body: FeedbackReq, request: Request):
     return {"ok": bool(out.get("ok")), "better": str(out.get("better", ""))[:160], "commentKo": str(out.get("commentKo", ""))[:100], "followUp": ""}
 
 
+# ---------------- 상황(Scene): 한 장면에서 여러 번 말하게 하는 묶음 ----------------
+
+SCENE_SYSTEM = """You are RODA, a spoken conversation coach for a Korean driver commuting by car.
+The driver cannot look at the screen. The goal is that the DRIVER speaks most of the time, not the app.
+Build ONE scene from what the driver is experiencing on the road right now (the context).
+A scene = one model sentence the driver repeats, then substitution drills where the driver says the whole sentence again with one part changed, then one short follow-up question asked in the target language.
+Return JSON only:
+{"canDoKo":"what the driver can now do, Korean noun phrase ending in -기, under 12 chars (e.g. 늦는다고 알리기)",
+ "setupKo":"one very short Korean line setting the situation, under 20 chars, polite 해요체",
+ "base":"model sentence in the target language, 6-11 words, natural everyday speech",
+ "hintKo":"Korean meaning of base",
+ "variations":[{"cueKo":"very short cue under 12 chars in the form: 이번엔 'X' where X is the new part written IN KOREAN (e.g. 이번엔 '30분', 이번엔 '내일')","target":"the base sentence with exactly one part swapped","hintKo":"Korean meaning"} x3],
+ "question":"a short natural follow-up question in the target language (max 8 words) another person would ask in this situation",
+ "questionKo":"Korean meaning of the question",
+ "sampleAnswer":"a natural one-sentence answer in the target language, 5-9 words"}
+Rules:
+- Tie the scene concretely to the context (destination type, upcoming turn, traffic jam, rain, landmark straight ahead, passengers).
+- Never ask the driver to look sideways, read signs, or do anything that takes attention off driving.
+- Each variation changes ONE slot (time, place, person, amount) so the driver re-says the full sentence.
+- No Korean characters in base, variation targets, question or sampleAnswer. For Korean place names use the common English name or a short romanization.
+- Do not reuse sentences in the avoid list."""
+
+
+@app.post("/v1/scene")
+def scene(body: GenerateReq, request: Request):
+    guard(request)
+    c = body.ctx
+    ctx_lines = [f"phase: {c.phase}", f"topic: {c.topic} ({c.topicKo}) because {c.why}"]
+    if c.destination: ctx_lines.append(f"destination: {c.destination} (type {c.destinationKind})")
+    if c.nextTurn: ctx_lines.append(f"next navigation instruction: {c.nextTurn}")
+    if c.traffic: ctx_lines.append(f"traffic: {c.traffic}")
+    if c.raining: ctx_lines.append("it is raining (wipers on)")
+    if c.passengers: ctx_lines.append("there are passengers in the car")
+    if c.landmark: ctx_lines.append(f"landmark straight ahead: {c.landmark} ({c.landmarkCategory})")
+    user = (f"Target language: {LANG_NAME.get(body.lang, 'English')}. Level: {LEVEL.get(body.level, LEVEL['intermediate'])}.\n"
+            "Context:\n- " + "\n- ".join(ctx_lines) + "\nAvoid: " + json.dumps(body.avoid[-8:], ensure_ascii=False))
+    t0 = time.time(); out = None
+    for model in (LLM_MODEL, LLM_MODEL_FAST):
+        try:
+            out = chat([{"role": "system", "content": SCENE_SYSTEM}, {"role": "user", "content": user}], model=model, temperature=0.8)
+            if out.get("base") and out.get("variations"): break
+        except Exception as e:
+            log.warning("scene failed (%s): %s", model, e)
+    if not out or not out.get("base"):
+        raise HTTPException(502, "llm failed")
+    log.info("scene %s %s %.1fs -> %s", body.lang, c.topic, time.time() - t0, out.get("base"))
+    def cut(v, n): return str(v or "")[:n]
+    vs = [{"cueKo": cut(v.get("cueKo"), 30), "target": cut(v.get("target"), 160), "hintKo": cut(v.get("hintKo"), 100)} for v in (out.get("variations") or [])[:3] if isinstance(v, dict) and v.get("target")]
+    import re as _re
+    for v in vs:  # 신호에 영어가 섞이면 운전자가 듣고 바로 알기 어렵다. 한국어 뜻으로 바꾼다.
+        if _re.search(r"[A-Za-z]", v["cueKo"]) and v["hintKo"]:
+            v["cueKo"] = v["hintKo"]
+    return {"canDoKo": cut(out.get("canDoKo"), 24), "setupKo": cut(out.get("setupKo"), 50), "base": cut(out.get("base"), 160), "hintKo": cut(out.get("hintKo"), 100),
+            "variations": vs, "question": cut(out.get("question"), 120), "questionKo": cut(out.get("questionKo"), 100), "sampleAnswer": cut(out.get("sampleAnswer"), 160)}
+
+
 # ---------------- 앞쪽 장소(OpenStreetMap) ----------------
 
 CATS = {

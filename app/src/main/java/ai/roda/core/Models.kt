@@ -3,10 +3,10 @@ package ai.roda.core
 import java.util.Locale
 
 /** 학습 언어. 모두 Pleos 음성 SDK가 지원하는 로케일이다. */
-enum class Lang(val code: String, val label: String, val locale: Locale) {
-    EN("en", "English", Locale.US),
-    ES("es", "Español", Locale("es", "MX")),
-    FR("fr", "Français", Locale.CANADA_FRENCH);
+enum class Lang(val code: String, val label: String, val locale: Locale, val ko: String) {
+    EN("en", "English", Locale.US, "영어"),
+    ES("es", "Español", Locale("es", "MX"), "스페인어"),
+    FR("fr", "Français", Locale.CANADA_FRENCH, "프랑스어");
 }
 
 val KOREAN: Locale = Locale.KOREA

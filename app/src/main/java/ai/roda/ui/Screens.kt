@@ -7,7 +7,6 @@ import ai.roda.Screen
 import ai.roda.Stage
 import ai.roda.Ui
 import ai.roda.car.Scenario
-import ai.roda.core.Attempt
 import ai.roda.core.ItemKind
 import ai.roda.core.Lang
 import ai.roda.core.Link
@@ -120,6 +119,8 @@ fun StartScreen(ui: Ui, vm: AppModel) {
         }) { ChipButton("설정") { vm.go(Screen.SETTINGS) } }
         Column(Modifier.weight(1f).fillMaxWidth().verticalScroll(rememberScrollState()).padding(horizontal = 40.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
             Spacer(Modifier.height(40.dp))
+            Text("출퇴근길, 나만의 ${ui.settings.lang.ko} 교실", style = T.titleMBold.copy(color = P.accentText), textAlign = TextAlign.Center)
+            Spacer(Modifier.height(36.dp))
             Text("${if (hasRoute) d.destinationName else ui.settings.scenario.dest}까지", style = T.titleS.copy(color = P.textSecondary), textAlign = TextAlign.Center)
             Text(fmtMin(total), style = T.display)
             Text("워밍업 ${fmtMin(warm)} · 대화 ${fmtMin(total - warm - review)} · 복습 ${fmtMin(review)}", style = T.titleS.copy(color = P.textSecondary), textAlign = TextAlign.Center)
@@ -128,7 +129,7 @@ fun StartScreen(ui: Ui, vm: AppModel) {
             Spacer(Modifier.height(48.dp))
             PrimaryButton("시작") { vm.startDrive(useDemo = !hasRoute) }
             Spacer(Modifier.height(36.dp))
-            Text((if (hasRoute) "" else "데모 주행 · ") + "복잡한 구간에서는 알아서 멈추고, 막히면 대화를 더해요", style = T.bodyS.copy(color = P.textTertiary), textAlign = TextAlign.Center)
+            Text((if (hasRoute) "" else "데모 주행 · ") + "지나는 길이 오늘의 교재예요. 운전이 바쁠 땐 멈추고, 길이 열리면 말을 걸어요.", style = T.bodyS.copy(color = P.textTertiary), textAlign = TextAlign.Center)
             Spacer(Modifier.height(40.dp))
         }
     }
@@ -175,16 +176,21 @@ private fun Coach(ui: Ui, narrow: Boolean) {
     }
     val last = ui.last?.takeIf { it.item.id == item.id && it.heard.isNotBlank() }
     val feedback = ui.stage == Stage.FEEDBACK && last != null
-    // 주제를 고른 이유 한 줄
-    ui.topic?.let { t ->
-        Row(Modifier.clip(RoundedCornerShape(50)).background(P.panel).padding(horizontal = 26.dp, vertical = 12.dp), verticalAlignment = Alignment.CenterVertically) {
-            Box(Modifier.size(12.dp).clip(CircleShape).background(P.accent))
-            Spacer(Modifier.width(12.dp))
-            val why = when (item.source) { "place" -> "이 길에서 배웠던 표현"; "review" -> "오늘 배운 표현 복습"; else -> t.why }
-            Text(why, style = T.bodyS.copy(color = P.basic600), maxLines = 1, overflow = TextOverflow.Ellipsis)
-        }
-        Spacer(Modifier.height(40.dp))
+    // 지금 상황(할 수 있게 되는 일)과 고른 이유, 차례 표시
+    val sc = ui.scene
+    Row(Modifier.clip(RoundedCornerShape(50)).background(P.panel).padding(horizontal = 26.dp, vertical = 12.dp), verticalAlignment = Alignment.CenterVertically) {
+        Box(Modifier.size(12.dp).clip(CircleShape).background(P.accent))
+        Spacer(Modifier.width(12.dp))
+        val why = when (item.source) { "place" -> "이 길에서 배웠던 표현"; "review" -> "오늘 복습"; else -> ui.topic?.why ?: "" }
+        Text(listOfNotNull(sc?.canDoKo?.takeIf { it.isNotBlank() && item.source != "review" }, why.takeIf { it.isNotBlank() }).joinToString(" · "), style = T.bodyS.copy(color = P.basic600), maxLines = 1, overflow = TextOverflow.Ellipsis)
     }
+    if (ui.turnTotal > 1) {
+        Spacer(Modifier.height(18.dp))
+        Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+            repeat(ui.turnTotal) { i -> Box(Modifier.size(if (i == ui.turnIdx) 30.dp else 14.dp, 14.dp).clip(RoundedCornerShape(7.dp)).background(if (i < ui.turnIdx) P.basic900 else if (i == ui.turnIdx) P.accent else P.basic200)) }
+        }
+    }
+    Spacer(Modifier.height(34.dp))
     val showTarget = feedback || item.kind == ItemKind.REPEAT || item.kind == ItemKind.LISTEN || (item.kind == ItemKind.QUIZ && ui.stage == Stage.TARGET)
     if (showTarget) {
         Text(if (feedback) last!!.better.ifBlank { item.target } else item.target, style = sentence, textAlign = TextAlign.Center)
@@ -238,6 +244,9 @@ private fun RouteStrip(ui: Ui) {
         // 선
         Box(Modifier.offset(y = 62.dp).fillMaxWidth().height(8.dp).clip(RoundedCornerShape(4.dp)).background(P.basic100))
         Box(Modifier.offset(y = 62.dp).width(x(now)).height(8.dp).clip(RoundedCornerShape(4.dp)).background(P.basic900))
+        // 예전에 말할 수 있게 된 구간(옅게)과 오늘 영어로 말하며 지나온 구간(진하게)
+        ui.known.forEach { b -> Box(Modifier.offset(x = x(b / 100f), y = 76.dp).width(w * 0.011f).height(8.dp).background(P.accentSoft)) }
+        ui.painted.forEach { (a0, a1) -> Box(Modifier.offset(x = x(a0), y = 76.dp).width((x(a1) - x(a0)).coerceAtLeast(4.dp)).height(8.dp).clip(RoundedCornerShape(4.dp)).background(P.accent)) }
         // 단계 경계 눈금
         listOf(warmF, reviewF).forEach { f -> Box(Modifier.offset(x = x(f), y = 56.dp).width(2.dp).height(20.dp).background(P.basic300)) }
         // 안내 지점
@@ -245,7 +254,7 @@ private fun RouteStrip(ui: Ui) {
             val passed = m.frac <= now
             Box(Modifier.offset(x = x(m.frac) - 14.dp, y = 52.dp).size(28.dp).clip(CircleShape).background(P.surface).border(4.dp, if (m.next) P.accent else if (passed) P.basic900 else P.basic400, CircleShape))
             Text(m.label, style = T.labelS.copy(color = if (m.next) P.accentText else P.textSecondary, fontWeight = if (m.next) androidx.compose.ui.text.font.FontWeight.SemiBold else androidx.compose.ui.text.font.FontWeight.Normal),
-                maxLines = 1, modifier = Modifier.offset(x = (x(m.frac) - 50.dp).coerceIn(0.dp, w - 110.dp), y = 96.dp).width(110.dp), textAlign = TextAlign.Center)
+                maxLines = 1, modifier = Modifier.offset(x = (x(m.frac) - 50.dp).coerceIn(0.dp, w - 110.dp), y = 100.dp).width(110.dp), textAlign = TextAlign.Center)
         }
         // 지금 위치
         Box(Modifier.offset(x = x(now) - 22.dp, y = 44.dp).size(44.dp).shadow(6.dp, CircleShape).clip(CircleShape).background(P.surface).padding(6.dp).clip(CircleShape).background(P.basic900))
@@ -258,12 +267,20 @@ private fun RouteStrip(ui: Ui) {
 
 // ============================== 도착 ==============================
 
+fun coverage(ui: Ui): Int {
+    val cells = BooleanArray(100)
+    ui.known.forEach { if (it in 0..99) cells[it] = true }
+    ui.painted.forEach { (a, b) -> for (i in (a * 100).toInt().coerceIn(0, 99)..(b * 100).toInt().coerceIn(0, 99)) cells[i] = true }
+    return cells.count { it }
+}
+
+private fun fmtDur(sec: Int) = if (sec >= 60) "${sec / 60}분 ${sec % 60}초" else "${sec}초"
+
 @Composable
 fun ArrivalScreen(ui: Ui, vm: AppModel) {
-    val spoken = ui.todayAttempts.filter { it.item.kind != ItemKind.LISTEN && it.heard.isNotBlank() }
-    val cards = ui.todayAttempts.filter { it.item.kind != ItemKind.LISTEN }.groupBy { it.better.ifBlank { it.item.target }.trim().trimEnd('.').lowercase() }.map { (_, v) -> v.maxBy { it.at } }.sortedByDescending { it.at }
-    val avg = if (spoken.isEmpty()) 0f else spoken.map { it.score }.average().toFloat()
-    val again = cards.count { it.heard.isNotBlank() && it.score < 0.95f }
+    val share = if (ui.userSpeakSec + ui.appSpeakSec == 0) 0 else ui.userSpeakSec * 100 / (ui.userSpeakSec + ui.appSpeakSec)
+    val cov = coverage(ui)
+    val done = ui.canDos.sortedByDescending { it.score }
     Column(Modifier.fillMaxSize()) {
         Header(APP_ICON, subtitle = { Sub("오늘 수업") }) { ChipButton("닫기") { vm.backToStart() } }
         BoxWithConstraints(Modifier.weight(1f).fillMaxWidth()) {
@@ -273,13 +290,33 @@ fun ArrivalScreen(ui: Ui, vm: AppModel) {
                 horizontalArrangement = Arrangement.spacedBy(20.dp), verticalArrangement = Arrangement.spacedBy(20.dp),
             ) {
                 item(span = { GridItemSpan(cols) }) {
-                    Column(Modifier.fillMaxWidth().padding(top = 56.dp, bottom = 20.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text("${fmtMin(ui.elapsedSec)} 동안", style = T.titleS.copy(color = P.textSecondary))
-                        Text("${spoken.size}문장을 말했어요", style = T.display, textAlign = TextAlign.Center)
-                        Text("평균 일치도 ${(avg * 100).toInt()}% · 다시 볼 표현 ${again}개", style = T.titleS.copy(color = P.textSecondary))
+                    Column(Modifier.fillMaxWidth().padding(top = 44.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text("오늘 ${ui.settings.lang.ko}로 말한 시간", style = T.titleS.copy(color = P.textSecondary))
+                        Text(fmtDur(ui.userSpeakSec), style = T.display, textAlign = TextAlign.Center)
+                        Text("대화의 ${share}%를 내가 말했어요 · ${ui.userTurns}번", style = T.titleS.copy(color = P.textSecondary), textAlign = TextAlign.Center)
+                        if (ui.demo && ui.lessonRealSec > 0) Text("데모 주행은 ${ui.settings.speedup.toInt()}배속이라 실제 수업은 ${fmtDur(ui.lessonRealSec)}였어요 · 같은 속도라면 ${ui.planTotalSec / 60}분 길에 약 ${(ui.userSpeakSec.toLong() * ui.planTotalSec / ui.lessonRealSec / 60).toInt()}분", style = T.labelM.copy(color = P.textTertiary), modifier = Modifier.padding(top = 6.dp))
                     }
                 }
-                items(cards) { a -> ExpressionCard(a) { vm.replay(a) } }
+                item(span = { GridItemSpan(cols) }) {
+                    Column(Modifier.fillMaxWidth().clip(RoundedCornerShape(28.dp)).background(P.panel).padding(horizontal = 36.dp, vertical = 26.dp)) {
+                        Row(verticalAlignment = Alignment.Bottom) {
+                            Text("내 출근길 영어 지도", style = T.bodyLStrong, modifier = Modifier.weight(1f))
+                            Text("$cov%", style = T.titleMBold.copy(color = P.accentText))
+                        }
+                        Text("이 길의 ${cov}%를 ${ui.settings.lang.ko}로 말하며 왔어요. 같은 길을 다시 지나면 그 자리에서 다시 물어요.", style = T.labelM.copy(color = P.textSecondary))
+                        Spacer(Modifier.height(18.dp))
+                        BoxWithConstraints(Modifier.fillMaxWidth().height(20.dp)) {
+                            val w = maxWidth
+                            Box(Modifier.fillMaxSize().clip(RoundedCornerShape(10.dp)).background(P.basic200))
+                            ui.known.forEach { b -> Box(Modifier.offset(x = w * (b / 100f)).width(w * 0.011f).fillMaxHeight().background(P.accentSoft)) }
+                            ui.painted.forEach { (a0, a1) -> Box(Modifier.offset(x = w * a0.coerceIn(0f, 1f)).width((w * (a1 - a0).coerceIn(0f, 1f)).coerceAtLeast(4.dp)).fillMaxHeight().clip(RoundedCornerShape(10.dp)).background(P.accent)) }
+                        }
+                    }
+                }
+                item(span = { GridItemSpan(cols) }) {
+                    Text("오늘 말할 수 있게 된 상황 ${done.count { it.score >= 0.8f }}가지", style = T.bodyLStrong, modifier = Modifier.padding(top = 10.dp, start = 8.dp))
+                }
+                items(done) { c -> CanDoCard(c) { vm.replayText(c.sentence) } }
                 item(span = { GridItemSpan(cols) }) { Spacer(Modifier.height(40.dp)) }
             }
         }
@@ -288,16 +325,16 @@ fun ArrivalScreen(ui: Ui, vm: AppModel) {
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-private fun ExpressionCard(a: Attempt, onClick: () -> Unit) {
-    Column(Modifier.fillMaxWidth().clip(RoundedCornerShape(28.dp)).background(P.panel).pressable(onClick).padding(horizontal = 32.dp, vertical = 28.dp)) {
-        Text(a.better.ifBlank { a.item.target }, style = T.bodyLStrong)
+private fun CanDoCard(c: ai.roda.CanDo, onClick: () -> Unit) {
+    Column(Modifier.fillMaxWidth().clip(RoundedCornerShape(28.dp)).background(P.panel).pressable(onClick).padding(horizontal = 32.dp, vertical = 26.dp)) {
+        Text(c.labelKo, style = T.bodyLStrong.copy(color = P.accentText))
         Spacer(Modifier.height(6.dp))
-        Text(a.item.hintKo, style = T.labelM.copy(color = P.textSecondary))
+        Text(c.sentence, style = T.bodyLStrong)
+        Text(c.hintKo, style = T.labelM.copy(color = P.textSecondary))
         Spacer(Modifier.height(14.dp))
         FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            if (a.heard.isNotBlank() && a.score < 0.95f) Tag("내일 이 길에서 다시", accent = true)
-            val place = a.placeLabel.substringBefore(" ·").take(14)
-            Tag(listOfNotNull(place.ifBlank { null }, if (a.heard.isBlank()) "듣기" else "${(a.score * 100).toInt()}%").joinToString(" · "))
+            if (c.score < 0.8f) Tag("내일 이 길에서 다시", accent = true)
+            Tag(listOfNotNull(c.place.take(14).ifBlank { null }, "${c.turns}번 말함", "${(c.score * 100).toInt()}%").joinToString(" · "))
         }
     }
 }

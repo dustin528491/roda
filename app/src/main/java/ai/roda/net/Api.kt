@@ -3,6 +3,7 @@ package ai.roda.net
 import ai.roda.core.Item
 import ai.roda.core.ItemKind
 import ai.roda.core.Landmark
+import ai.roda.lesson.Scene
 import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -69,6 +70,10 @@ class Api(private val base: String) {
     }
 
     suspend fun feedback(req: FeedbackReq): FeedbackRes? = post("/v1/feedback", req, 9000)
+
+    /** 지금 상황으로 '상황 하나'(본보기·바꿔 말하기·질문)를 만든다. */
+    suspend fun scene(req: GenerateReq): Scene? = post<GenerateReq, Scene>("/v1/scene", req, 14000)?.takeIf { it.base.isNotBlank() && it.variations.isNotEmpty() }
+        ?.copy(id = "coach-${System.currentTimeMillis()}", topic = req.ctx.topic, lang = req.lang, source = "coach")
 
     suspend fun landmarks(lat: Double, lon: Double, heading: Float): List<Landmark> = withContext(Dispatchers.IO) {
         runCatching {

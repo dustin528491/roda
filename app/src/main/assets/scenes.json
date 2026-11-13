@@ -1,0 +1,622 @@
+[
+{
+"id": "en-warmup-0",
+"topic": "warmup",
+"lang": "en",
+"canDoKo": "아침 인사하기",
+"setupKo": "출발 인사부터 해요.",
+"base": "Good morning! I'm ready for today.",
+"hintKo": "좋은 아침! 오늘 준비됐어요.",
+"variations": [
+{
+"cueKo": "이번엔 '이번 주'",
+"target": "Good morning! I'm ready for this week.",
+"hintKo": "좋은 아침! 이번 주 준비됐어요."
+},
+{
+"cueKo": "이번엔 '회의'",
+"target": "Good morning! I'm ready for the meeting.",
+"hintKo": "좋은 아침! 회의 준비됐어요."
+},
+{
+"cueKo": "이번엔 '출장'",
+"target": "Good morning! I'm ready for the trip.",
+"hintKo": "좋은 아침! 출장 준비됐어요."
+}
+],
+"question": "How are you feeling this morning?",
+"questionKo": "오늘 아침 기분이 어때요?",
+"sampleAnswer": "I'm feeling pretty good today.",
+"source": "bank"
+},
+{
+"id": "en-smalltalk-1",
+"topic": "smalltalk",
+"lang": "en",
+"canDoKo": "주말 이야기하기",
+"setupKo": "동료가 주말을 물어요.",
+"base": "I went hiking with my friends.",
+"hintKo": "친구들이랑 등산 갔어요.",
+"variations": [
+{
+"cueKo": "이번엔 '가족이랑'",
+"target": "I went hiking with my family.",
+"hintKo": "가족이랑 등산 갔어요."
+},
+{
+"cueKo": "이번엔 '캠핑'",
+"target": "I went camping with my family.",
+"hintKo": "가족이랑 캠핑 갔어요."
+},
+{
+"cueKo": "이번엔 '혼자'",
+"target": "I went camping by myself.",
+"hintKo": "혼자 캠핑 갔어요."
+}
+],
+"question": "What are you doing this weekend?",
+"questionKo": "이번 주말엔 뭐 해요?",
+"sampleAnswer": "I'm going to stay home and rest.",
+"source": "bank"
+},
+{
+"id": "en-office_meeting-2",
+"topic": "office_meeting",
+"lang": "en",
+"canDoKo": "회의 시간 바꾸기",
+"setupKo": "회사 가는 길이에요. 회의를 미뤄요.",
+"base": "Can we push the meeting to three?",
+"hintKo": "회의를 3시로 미룰 수 있을까요?",
+"variations": [
+{
+"cueKo": "이번엔 '4시'",
+"target": "Can we push the meeting to four?",
+"hintKo": "회의를 4시로 미룰 수 있을까요?"
+},
+{
+"cueKo": "이번엔 '내일'",
+"target": "Can we push the meeting to tomorrow?",
+"hintKo": "회의를 내일로 미룰 수 있을까요?"
+},
+{
+"cueKo": "이번엔 '다음 주'",
+"target": "Can we push the meeting to next week?",
+"hintKo": "회의를 다음 주로 미룰 수 있을까요?"
+}
+],
+"question": "Why do you need to move the meeting?",
+"questionKo": "왜 회의를 옮겨야 해요?",
+"sampleAnswer": "I have another meeting at that time.",
+"source": "bank"
+},
+{
+"id": "en-office_meeting-3",
+"topic": "office_meeting",
+"lang": "en",
+"canDoKo": "다시 말해 달라고 하기",
+"setupKo": "회의 중에 잘 못 들었어요.",
+"base": "Could you say that again, please?",
+"hintKo": "다시 한번 말씀해 주시겠어요?",
+"variations": [
+{
+"cueKo": "이번엔 '더 천천히'",
+"target": "Could you say that more slowly, please?",
+"hintKo": "더 천천히 말씀해 주시겠어요?"
+},
+{
+"cueKo": "이번엔 '마지막 부분'",
+"target": "Could you say the last part again, please?",
+"hintKo": "마지막 부분을 다시 말씀해 주시겠어요?"
+}
+],
+"question": "Is the connection okay on your side?",
+"questionKo": "그쪽 연결은 괜찮아요?",
+"sampleAnswer": "Yes, I can hear you clearly now.",
+"source": "bank"
+},
+{
+"id": "en-directions-4",
+"topic": "directions",
+"lang": "en",
+"canDoKo": "길 안내하기",
+"setupKo": "곧 교차로예요. 길을 알려 줘요.",
+"base": "Turn right at the next light.",
+"hintKo": "다음 신호에서 우회전하세요.",
+"variations": [
+{
+"cueKo": "이번엔 '왼쪽'",
+"target": "Turn left at the next light.",
+"hintKo": "다음 신호에서 좌회전하세요."
+},
+{
+"cueKo": "이번엔 '교차로'",
+"target": "Turn left at the next intersection.",
+"hintKo": "다음 교차로에서 좌회전하세요."
+},
+{
+"cueKo": "이번엔 '두 번째 신호'",
+"target": "Turn left at the second light.",
+"hintKo": "두 번째 신호에서 좌회전하세요."
+}
+],
+"question": "How far is it from here?",
+"questionKo": "여기서 얼마나 멀어요?",
+"sampleAnswer": "It's about ten minutes from here.",
+"source": "bank"
+},
+{
+"id": "en-road_signs-5",
+"topic": "road_signs",
+"lang": "en",
+"canDoKo": "제한속도 말하기",
+"setupKo": "앞에 과속 카메라가 있어요.",
+"base": "There's a speed camera ahead.",
+"hintKo": "앞에 과속 카메라가 있어요.",
+"variations": [
+{
+"cueKo": "이번엔 '스쿨존'",
+"target": "There's a school zone ahead.",
+"hintKo": "앞에 어린이 보호구역이 있어요."
+},
+{
+"cueKo": "이번엔 '공사 구간'",
+"target": "There's a construction zone ahead.",
+"hintKo": "앞에 공사 구간이 있어요."
+}
+],
+"question": "What's the speed limit here?",
+"questionKo": "여기 제한속도가 얼마예요?",
+"sampleAnswer": "The speed limit is fifty here.",
+"source": "bank"
+},
+{
+"id": "en-traffic-6",
+"topic": "traffic",
+"lang": "en",
+"canDoKo": "늦는다고 알리기",
+"setupKo": "차가 막혀요. 늦는다고 알려요.",
+"base": "I'm stuck in traffic. I'll be ten minutes late.",
+"hintKo": "차가 막혀요. 10분 늦을 거예요.",
+"variations": [
+{
+"cueKo": "이번엔 '20분'",
+"target": "I'm stuck in traffic. I'll be twenty minutes late.",
+"hintKo": "차가 막혀요. 20분 늦을 거예요."
+},
+{
+"cueKo": "이번엔 '조금'",
+"target": "I'm stuck in traffic. I'll be a little late.",
+"hintKo": "차가 막혀요. 조금 늦을 거예요."
+},
+{
+"cueKo": "이번엔 '30분'",
+"target": "I'm stuck in traffic. I'll be thirty minutes late.",
+"hintKo": "차가 막혀요. 30분 늦을 거예요."
+}
+],
+"question": "Should we start without you?",
+"questionKo": "먼저 시작할까요?",
+"sampleAnswer": "Yes, please start without me.",
+"source": "bank"
+},
+{
+"id": "en-weather_rain-7",
+"topic": "weather_rain",
+"lang": "en",
+"canDoKo": "날씨 이야기하기",
+"setupKo": "비가 와요. 날씨 얘기를 해요.",
+"base": "It's raining hard today.",
+"hintKo": "오늘 비가 많이 와요.",
+"variations": [
+{
+"cueKo": "이번엔 '아침 내내'",
+"target": "It's been raining hard all morning.",
+"hintKo": "아침 내내 비가 많이 와요."
+},
+{
+"cueKo": "이번엔 '조금'",
+"target": "It's raining a little today.",
+"hintKo": "오늘 비가 조금 와요."
+},
+{
+"cueKo": "이번엔 '눈'",
+"target": "It's snowing a little today.",
+"hintKo": "오늘 눈이 조금 와요."
+}
+],
+"question": "Did you bring an umbrella?",
+"questionKo": "우산 가져왔어요?",
+"sampleAnswer": "No, I forgot to bring my umbrella.",
+"source": "bank"
+},
+{
+"id": "en-charging-8",
+"topic": "charging",
+"lang": "en",
+"canDoKo": "충전 물어보기",
+"setupKo": "배터리가 얼마 안 남았어요.",
+"base": "Is there a fast charger nearby?",
+"hintKo": "근처에 급속 충전기 있어요?",
+"variations": [
+{
+"cueKo": "이번엔 '주유소'",
+"target": "Is there a gas station nearby?",
+"hintKo": "근처에 주유소 있어요?"
+},
+{
+"cueKo": "이번엔 '주차장'",
+"target": "Is there a parking lot nearby?",
+"hintKo": "근처에 주차장 있어요?"
+}
+],
+"question": "How much battery do you have left?",
+"questionKo": "배터리가 얼마나 남았어요?",
+"sampleAnswer": "I have about twenty percent left.",
+"source": "bank"
+},
+{
+"id": "en-temperature-9",
+"topic": "temperature",
+"lang": "en",
+"canDoKo": "온도 부탁하기",
+"setupKo": "차 안이 좀 추워요.",
+"base": "Could you turn up the heat a little?",
+"hintKo": "히터 좀 올려 줄래요?",
+"variations": [
+{
+"cueKo": "이번엔 '에어컨 줄이기'",
+"target": "Could you turn down the AC a little?",
+"hintKo": "에어컨 좀 줄여 줄래요?"
+},
+{
+"cueKo": "이번엔 '창문 열기'",
+"target": "Could you open the window a little?",
+"hintKo": "창문 좀 열어 줄래요?"
+}
+],
+"question": "Is it too cold for you?",
+"questionKo": "너무 추워요?",
+"sampleAnswer": "Yes, it's a bit chilly in here.",
+"source": "bank"
+},
+{
+"id": "en-shopping-10",
+"topic": "shopping",
+"lang": "en",
+"canDoKo": "물건 찾기",
+"setupKo": "마트에 가는 길이에요.",
+"base": "Where can I find the milk?",
+"hintKo": "우유 어디 있어요?",
+"variations": [
+{
+"cueKo": "이번엔 '계란'",
+"target": "Where can I find the eggs?",
+"hintKo": "계란 어디 있어요?"
+},
+{
+"cueKo": "이번엔 '계산대'",
+"target": "Where can I find the checkout?",
+"hintKo": "계산대 어디 있어요?"
+}
+],
+"question": "Would you like a bag?",
+"questionKo": "봉투 드릴까요?",
+"sampleAnswer": "Yes, one bag, please.",
+"source": "bank"
+},
+{
+"id": "en-travel-11",
+"topic": "travel",
+"lang": "en",
+"canDoKo": "렌터카 빌리기",
+"setupKo": "여행 준비예요. 렌터카를 빌려요.",
+"base": "I have a reservation under Kim.",
+"hintKo": "김으로 예약했어요.",
+"variations": [
+{
+"cueKo": "이번엔 '3일간'",
+"target": "I have a reservation for three days.",
+"hintKo": "3일간 예약했어요."
+},
+{
+"cueKo": "이번엔 '소형차'",
+"target": "I have a reservation for a compact car.",
+"hintKo": "소형차로 예약했어요."
+}
+],
+"question": "Would you like full insurance?",
+"questionKo": "종합 보험 드시겠어요?",
+"sampleAnswer": "Yes, I'd like full insurance, please.",
+"source": "bank"
+},
+{
+"id": "en-health-12",
+"topic": "health",
+"lang": "en",
+"canDoKo": "진료 예약하기",
+"setupKo": "병원에 가는 길이에요.",
+"base": "I'd like to make an appointment.",
+"hintKo": "진료 예약하고 싶어요.",
+"variations": [
+{
+"cueKo": "이번엔 '내일로'",
+"target": "I'd like to make an appointment for tomorrow.",
+"hintKo": "내일로 진료 예약하고 싶어요."
+},
+{
+"cueKo": "이번엔 '바꾸기'",
+"target": "I'd like to change my appointment.",
+"hintKo": "예약을 바꾸고 싶어요."
+}
+],
+"question": "What seems to be the problem?",
+"questionKo": "어디가 불편하세요?",
+"sampleAnswer": "I've had a headache since yesterday.",
+"source": "bank"
+},
+{
+"id": "es-warmup-0",
+"topic": "warmup",
+"lang": "es",
+"canDoKo": "아침 인사하기",
+"setupKo": "출발 인사부터 해요.",
+"base": "¡Buenos días! Estoy listo para hoy.",
+"hintKo": "좋은 아침! 오늘 준비됐어요.",
+"variations": [
+{
+"cueKo": "이번엔 '회의'",
+"target": "¡Buenos días! Estoy listo para la reunión.",
+"hintKo": "좋은 아침! 회의 준비됐어요."
+},
+{
+"cueKo": "이번엔 '여행'",
+"target": "¡Buenos días! Estoy listo para el viaje.",
+"hintKo": "좋은 아침! 여행 준비됐어요."
+}
+],
+"question": "¿Cómo estás hoy?",
+"questionKo": "오늘 어때요?",
+"sampleAnswer": "Estoy muy bien, gracias.",
+"source": "bank"
+},
+{
+"id": "es-directions-1",
+"topic": "directions",
+"lang": "es",
+"canDoKo": "길 안내하기",
+"setupKo": "곧 교차로예요.",
+"base": "Gire a la derecha en el próximo semáforo.",
+"hintKo": "다음 신호에서 우회전하세요.",
+"variations": [
+{
+"cueKo": "이번엔 '왼쪽'",
+"target": "Gire a la izquierda en el próximo semáforo.",
+"hintKo": "다음 신호에서 좌회전하세요."
+},
+{
+"cueKo": "이번엔 '교차로'",
+"target": "Gire a la izquierda en el próximo cruce.",
+"hintKo": "다음 교차로에서 좌회전하세요."
+}
+],
+"question": "¿Está lejos de aquí?",
+"questionKo": "여기서 멀어요?",
+"sampleAnswer": "Está a diez minutos de aquí.",
+"source": "bank"
+},
+{
+"id": "es-traffic-2",
+"topic": "traffic",
+"lang": "es",
+"canDoKo": "늦는다고 알리기",
+"setupKo": "차가 막혀요.",
+"base": "Hay mucho tráfico. Voy a llegar diez minutos tarde.",
+"hintKo": "차가 많이 막혀요. 10분 늦을 거예요.",
+"variations": [
+{
+"cueKo": "이번엔 '20분'",
+"target": "Hay mucho tráfico. Voy a llegar veinte minutos tarde.",
+"hintKo": "차가 많이 막혀요. 20분 늦을 거예요."
+},
+{
+"cueKo": "이번엔 '조금'",
+"target": "Hay mucho tráfico. Voy a llegar un poco tarde.",
+"hintKo": "차가 많이 막혀요. 조금 늦을 거예요."
+}
+],
+"question": "¿Empezamos sin ti?",
+"questionKo": "먼저 시작할까요?",
+"sampleAnswer": "Sí, empiecen sin mí, por favor.",
+"source": "bank"
+},
+{
+"id": "es-weather_rain-3",
+"topic": "weather_rain",
+"lang": "es",
+"canDoKo": "날씨 이야기하기",
+"setupKo": "비가 와요.",
+"base": "Hoy está lloviendo mucho.",
+"hintKo": "오늘 비가 많이 와요.",
+"variations": [
+{
+"cueKo": "이번엔 '조금'",
+"target": "Hoy está lloviendo un poco.",
+"hintKo": "오늘 비가 조금 와요."
+}
+],
+"question": "¿Trajiste paraguas?",
+"questionKo": "우산 가져왔어요?",
+"sampleAnswer": "No, olvidé mi paraguas.",
+"source": "bank"
+},
+{
+"id": "es-charging-4",
+"topic": "charging",
+"lang": "es",
+"canDoKo": "주유·충전 부탁하기",
+"setupKo": "연료가 얼마 안 남았어요.",
+"base": "Lleno, por favor.",
+"hintKo": "가득 채워 주세요.",
+"variations": [
+{
+"cueKo": "이번엔 '절반'",
+"target": "Medio tanque, por favor.",
+"hintKo": "절반만 채워 주세요."
+},
+{
+"cueKo": "이번엔 '급속 충전기'",
+"target": "¿Hay un cargador rápido cerca?",
+"hintKo": "근처에 급속 충전기 있어요?"
+}
+],
+"question": "¿Paga con tarjeta?",
+"questionKo": "카드로 계산하세요?",
+"sampleAnswer": "Sí, con tarjeta, por favor.",
+"source": "bank"
+},
+{
+"id": "es-road_signs-5",
+"topic": "road_signs",
+"lang": "es",
+"canDoKo": "교통 표지 말하기",
+"setupKo": "앞에 과속 카메라가 있어요.",
+"base": "Hay un radar adelante.",
+"hintKo": "앞에 과속 카메라가 있어요.",
+"variations": [
+{
+"cueKo": "이번엔 '스쿨존'",
+"target": "Hay una zona escolar adelante.",
+"hintKo": "앞에 어린이 보호구역이 있어요."
+}
+],
+"question": "¿Cuál es el límite de velocidad?",
+"questionKo": "제한속도가 얼마예요?",
+"sampleAnswer": "El límite es cincuenta.",
+"source": "bank"
+},
+{
+"id": "es-travel-6",
+"topic": "travel",
+"lang": "es",
+"canDoKo": "렌터카 빌리기",
+"setupKo": "여행 준비예요.",
+"base": "Tengo una reserva a nombre de Kim.",
+"hintKo": "김으로 예약했어요.",
+"variations": [
+{
+"cueKo": "이번엔 '3일간'",
+"target": "Tengo una reserva por tres días.",
+"hintKo": "3일간 예약했어요."
+}
+],
+"question": "¿Quiere seguro completo?",
+"questionKo": "종합 보험 드시겠어요?",
+"sampleAnswer": "Sí, quiero seguro completo.",
+"source": "bank"
+},
+{
+"id": "fr-warmup-0",
+"topic": "warmup",
+"lang": "fr",
+"canDoKo": "아침 인사하기",
+"setupKo": "출발 인사부터 해요.",
+"base": "Bonjour ! Je suis prêt pour aujourd'hui.",
+"hintKo": "안녕하세요! 오늘 준비됐어요.",
+"variations": [
+{
+"cueKo": "이번엔 '회의'",
+"target": "Bonjour ! Je suis prêt pour la réunion.",
+"hintKo": "안녕하세요! 회의 준비됐어요."
+}
+],
+"question": "Comment ça va ce matin ?",
+"questionKo": "오늘 아침 어때요?",
+"sampleAnswer": "Ça va très bien, merci.",
+"source": "bank"
+},
+{
+"id": "fr-directions-1",
+"topic": "directions",
+"lang": "fr",
+"canDoKo": "길 안내하기",
+"setupKo": "곧 교차로예요.",
+"base": "Tournez à droite au prochain feu.",
+"hintKo": "다음 신호에서 우회전하세요.",
+"variations": [
+{
+"cueKo": "이번엔 '왼쪽'",
+"target": "Tournez à gauche au prochain feu.",
+"hintKo": "다음 신호에서 좌회전하세요."
+},
+{
+"cueKo": "이번엔 '교차로'",
+"target": "Tournez à gauche au prochain carrefour.",
+"hintKo": "다음 교차로에서 좌회전하세요."
+}
+],
+"question": "C'est loin d'ici ?",
+"questionKo": "여기서 멀어요?",
+"sampleAnswer": "C'est à dix minutes d'ici.",
+"source": "bank"
+},
+{
+"id": "fr-traffic-2",
+"topic": "traffic",
+"lang": "fr",
+"canDoKo": "늦는다고 알리기",
+"setupKo": "차가 막혀요.",
+"base": "Je suis dans les bouchons. J'aurai dix minutes de retard.",
+"hintKo": "차가 막혀요. 10분 늦을 거예요.",
+"variations": [
+{
+"cueKo": "이번엔 '20분'",
+"target": "Je suis dans les bouchons. J'aurai vingt minutes de retard.",
+"hintKo": "차가 막혀요. 20분 늦을 거예요."
+}
+],
+"question": "On commence sans toi ?",
+"questionKo": "먼저 시작할까요?",
+"sampleAnswer": "Oui, commencez sans moi.",
+"source": "bank"
+},
+{
+"id": "fr-weather_rain-3",
+"topic": "weather_rain",
+"lang": "fr",
+"canDoKo": "날씨 이야기하기",
+"setupKo": "비가 와요.",
+"base": "Il pleut beaucoup aujourd'hui.",
+"hintKo": "오늘 비가 많이 와요.",
+"variations": [
+{
+"cueKo": "이번엔 '조금'",
+"target": "Il pleut un peu aujourd'hui.",
+"hintKo": "오늘 비가 조금 와요."
+}
+],
+"question": "Tu as un parapluie ?",
+"questionKo": "우산 있어요?",
+"sampleAnswer": "Non, j'ai oublié mon parapluie.",
+"source": "bank"
+},
+{
+"id": "fr-charging-4",
+"topic": "charging",
+"lang": "fr",
+"canDoKo": "충전 물어보기",
+"setupKo": "배터리가 얼마 안 남았어요.",
+"base": "Il y a une borne rapide près d'ici ?",
+"hintKo": "근처에 급속 충전기 있어요?",
+"variations": [
+{
+"cueKo": "이번엔 '주유소'",
+"target": "Il y a une station-service près d'ici ?",
+"hintKo": "근처에 주유소 있어요?"
+}
+],
+"question": "Il vous reste combien de batterie ?",
+"questionKo": "배터리가 얼마나 남았어요?",
+"sampleAnswer": "Il me reste vingt pour cent.",
+"source": "bank"
+}
+]
