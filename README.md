@@ -34,9 +34,9 @@
 
 ## 실행 방법
 
-1. `apk/RODA_release.apk` 를 Pleos Connect 에뮬레이터에 설치합니다.
+1. `apk/이동혁_RODA_release.apk` 를 Pleos Connect 에뮬레이터에 설치합니다.
    ```
-   adb install -r -g apk/RODA_release.apk
+   adb install -r -g apk/이동혁_RODA_release.apk
    ```
 2. 앱 목록에서 **로다**를 실행하고 권한을 허용합니다(위치·내비·음성·차량 조회).
 3. 내비에 목적지가 잡혀 있으면 **출발하며 시작**, 없으면 **데모 주행으로 시작**을 누릅니다.
@@ -80,6 +80,6 @@ server/                FastAPI 서버(문항 생성·첨삭: LLM, 앞쪽 장소:
 
 ## APK
 
-- `apk/RODA_release.apk`
+- `apk/이동혁_RODA_release.apk`
 
 장소 정보 © OpenStreetMap contributors (ODbL).
